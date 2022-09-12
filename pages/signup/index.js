@@ -8,7 +8,7 @@ import { Button, Checkbox, Col, Form, Input, Row } from 'antd'
 import Link from 'next/link'
 import React from 'react'
 import axios from 'axios'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import responsiveObserve from 'antd/lib/_util/responsiveObserve'
 
 // Handle form submit
@@ -28,7 +28,6 @@ const SignIn = () => {
 	}
 	return (
 		<Row>
-			<Toaster />
 			<Col span={8} offset={8}>
 				<h1
 					style={{
