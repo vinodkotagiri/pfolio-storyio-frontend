@@ -1,19 +1,29 @@
+import React, { useState } from 'react'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, Checkbox, Col, Form, Input, Row } from 'antd'
-import React from 'react'
 import Link from 'next/link'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 const SignIn = () => {
+	//State for button loading animation
+	const [loading, setLoading] = useState(false)
+
 	//Handle login
 	const onFinish = async (values) => {
-		try {
-			await axios.post('http://localhost:5002/users/login', values)
-			toast.success('Logged in successfully!')
-		} catch (error) {
-			console.log(error.response.data.error)
-			toast.error(error.response.data.error)
-		}
+		setLoading(true)
+
+		await axios
+			.post('http://localhost:5002/users/login', values)
+			.then((response) => {
+				toast.success('Logged in successfully!')
+				setLoading(false)
+				console.log(response.data)
+			})
+			.catch((error) => {
+				setLoading(false)
+				console.log(error.response.data.error)
+				toast.error(error.response.data.error)
+			})
 	}
 
 	return (
@@ -73,7 +83,8 @@ const SignIn = () => {
 						<Button
 							type='primary'
 							htmlType='submit'
-							className='login-form-button'>
+							className='login-form-button'
+							loading={loading}>
 							Sign In
 						</Button>
 						<span style={{ margin: '0 0.5rem' }}>Need an account?</span>

@@ -1,13 +1,16 @@
 import { useContext } from 'react'
-import { ThemeContext, ThemeProvider } from '../context/theme'
+import { ThemeProvider } from '../context/theme'
+import { AuthProvider } from '../context/AuthContext'
 import TopNav from '../components/TopNav'
 import { Toaster } from 'react-hot-toast'
 function MyApp({ Component, pageProps }) {
 	return (
 		<ThemeProvider>
-			<TopNav />
-			<Toaster />
-			<Component {...pageProps} />
+			<AuthProvider>
+				<TopNav />
+				<Toaster />
+				<Component {...pageProps} />
+			</AuthProvider>
 		</ThemeProvider>
 	)
 }

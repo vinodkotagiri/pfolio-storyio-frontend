@@ -1,3 +1,4 @@
+import React, { useState, useContext } from 'react'
 import {
 	LockOutlined,
 	UserOutlined,
@@ -6,25 +7,40 @@ import {
 } from '@ant-design/icons'
 import { Button, Checkbox, Col, Form, Input, Row } from 'antd'
 import Link from 'next/link'
-import React from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import responsiveObserve from 'antd/lib/_util/responsiveObserve'
+import { AuthContext } from '../../context/AuthContext'
+import { useRouter } from 'next/router'
 
 // Handle form submit
 const SignIn = () => {
+	//State for button loading animation
+	const [loading, setLoading] = useState(false)
+
+	//Auth context
+	const [auth, setAuth] = useContext(AuthContext)
+
+	//hook
+	const route = useRouter()
+
 	const onFinish = async (values) => {
-		try {
-			// Post data to the server
-			const response = await axios.post(
-				'http://localhost:5002/users/register',
-				values
-			)
-			toast.success('User registered successfully')
-		} catch (error) {
-			console.log(error.response.data.error)
-			toast.error(error.response.data.error)
-		}
+		setLoading(true)
+		await axios
+			.post('http://localhost:5002/users/register', values)
+			.then((response) => {
+				const { data } = response
+				setAuth(data)
+				localStorage.setItem('auth', JSON.stringify(data))
+				toast.success('User registered successfully')
+				setLoading(false)
+				route.push('/admin')
+			})
+			.catch((err) => {
+				setLoading(false)
+				console.log(err.response.data.error)
+				toast.error(err.response.data.error)
+			})
 	}
 	return (
 		<Row>
@@ -93,7 +109,8 @@ const SignIn = () => {
 						<Button
 							type='primary'
 							htmlType='submit'
-							className='login-form-button'>
+							className='login-form-button'
+							loading={loading}>
 							Sign Up
 						</Button>
 						<span style={{ margin: '0 0.5rem' }}>Already has account?</span>
