@@ -29,6 +29,7 @@ const SignIn = () => {
 		await axios
 			.post('http://localhost:5002/users/register', values)
 			.then((response) => {
+				//Save User and token to context and local storage
 				const { data } = response
 				setAuth(data)
 				localStorage.setItem('auth', JSON.stringify(data))

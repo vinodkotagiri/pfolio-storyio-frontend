@@ -1,13 +1,24 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, Checkbox, Col, Form, Input, Row } from 'antd'
 import Link from 'next/link'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import { AuthContext } from '../../context/AuthContext'
+import { useRouter } from 'next/router'
 const SignIn = () => {
 	//State for button loading animation
 	const [loading, setLoading] = useState(false)
+	//Auth context
+	const [aut, setAuth] = useContext(AuthContext)
 
+	//Hook
+	const route = useRouter()
+	const [form] = Form.useForm()
+	//Reset
+	const onReset = () => {
+		form.resetFields()
+	}
 	//Handle login
 	const onFinish = async (values) => {
 		setLoading(true)
@@ -15,14 +26,20 @@ const SignIn = () => {
 		await axios
 			.post('http://localhost:5002/users/login', values)
 			.then((response) => {
-				toast.success('Logged in successfully!')
 				setLoading(false)
+				//Save User and token to context and local storage
+				const { data } = response
+				setAuth(data)
+				localStorage.setItem('auth', JSON.stringify(data))
+				route.push('/')
+				toast.success('Logged in successfully!')
 				console.log(response.data)
 			})
-			.catch((error) => {
+			.catch((err) => {
+				console.log(err)
 				setLoading(false)
-				console.log(error.response.data.error)
-				toast.error(error.response.data.error)
+				console.log(err.response.data.error)
+				toast.error(err.response.data.error)
 			})
 	}
 
@@ -39,6 +56,7 @@ const SignIn = () => {
 					Sign In
 				</h1>
 				<Form
+					form={form}
 					name='normal_login'
 					className='login-form'
 					initialValues={{
@@ -87,7 +105,18 @@ const SignIn = () => {
 							loading={loading}>
 							Sign In
 						</Button>
-						<span style={{ margin: '0 0.5rem' }}>Need an account?</span>
+						<Button
+							type='outlined'
+							onClick={onReset}
+							className='login-form-button'
+							loading={loading}
+							style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
+							Reset
+						</Button>
+
+						<span style={{ marginLeft: '2rem', marginRight: '0.5rem' }}>
+							Need an account?
+						</span>
 						<Link href='/signup'>
 							<a>Sign In</a>
 						</Link>
