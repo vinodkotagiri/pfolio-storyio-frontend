@@ -92,7 +92,7 @@ const SignIn = () => {
 						/>
 					</Form.Item>
 					<Form.Item>
-						<Link href='/forget-password'>
+						<Link href='/forgot-password'>
 							<a className='login-form-forgot'>Forgot password?</a>
 						</Link>
 					</Form.Item>
