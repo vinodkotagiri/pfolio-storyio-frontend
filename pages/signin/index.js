@@ -18,6 +18,7 @@ const SignIn = () => {
 	//Reset
 	const onReset = () => {
 		form.resetFields()
+		setLoading(false)
 	}
 	//Handle login
 	const onFinish = async (values) => {
@@ -31,9 +32,11 @@ const SignIn = () => {
 				const { data } = response
 				setAuth(data)
 				localStorage.setItem('auth', JSON.stringify(data))
-				route.push('/')
 				toast.success('Logged in successfully!')
-				console.log(response.data)
+				if (data?.user?.role === 'admin') route.push('/admin')
+				else if (data?.user?.role === 'author') route.push('/author')
+				else route.push('/subscriber')
+				// console.log(data)
 			})
 			.catch((err) => {
 				console.log(err)
@@ -85,7 +88,7 @@ const SignIn = () => {
 								message: 'Please input your Password!',
 							},
 						]}>
-						<Input
+						<Input.Password
 							prefix={<LockOutlined className='site-form-item-icon' />}
 							type='password'
 							placeholder='Password'
@@ -117,7 +120,7 @@ const SignIn = () => {
 							Need an account?
 						</span>
 						<Link href='/signup'>
-							<a>Sign In</a>
+							<a>Sign Up</a>
 						</Link>
 					</Form.Item>
 				</Form>

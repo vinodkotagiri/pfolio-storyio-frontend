@@ -34,6 +34,14 @@ const TopNav = () => {
 		route.push('/signin')
 		toast.success('Successfully signed out!')
 	}
+
+	//Handle dashboard navigation
+	//Based on role
+	const roleBasedLink = () => {
+		if (auth?.user?.role === 'admin') return '/admin'
+		else if (auth?.user?.role === 'author') return '/author'
+		else return '/subscriber'
+	}
 	return (
 		<Menu mode='horizontal' onClick={onClick} selectedKeys={[current]}>
 			<Menu.Item key='brand' style={{ fontWeight: 900, fontSize: '1.8em' }}>
@@ -65,13 +73,16 @@ const TopNav = () => {
 				<Fragment>
 					<Menu.SubMenu
 						key='dashboard'
-						title='Dashboard'
+						title={
+							auth?.user?.name?.charAt(0).toUpperCase() +
+								auth?.user?.name?.substring(1) || 'Dashboard'
+						}
 						icon=<SettingOutlined />
 						style={{ marginLeft: 'auto' }}>
 						<Menu.ItemGroup title='Management'>
 							<Menu.Item key='op1'>
-								<Link href='/admin'>
-									<a>Admin</a>
+								<Link href={roleBasedLink()}>
+									<a>Dashboard</a>
 								</Link>
 							</Menu.Item>
 						</Menu.ItemGroup>

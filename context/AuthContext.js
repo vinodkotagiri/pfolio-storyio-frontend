@@ -6,7 +6,7 @@ const baseURL = 'http://localhost:5002'
 const AuthContext = createContext()
 const AuthProvider = ({ children }) => {
 	const [auth, setAuth] = useState({
-		user: {},
+		user: null,
 		token: '',
 	})
 

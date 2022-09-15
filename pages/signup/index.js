@@ -35,7 +35,7 @@ const SignIn = () => {
 				localStorage.setItem('auth', JSON.stringify(data))
 				toast.success('User registered successfully')
 				setLoading(false)
-				route.push('/admin')
+				route.push('/')
 			})
 			.catch((err) => {
 				setLoading(false)
