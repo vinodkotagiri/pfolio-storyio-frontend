@@ -27,7 +27,7 @@ const SignIn = () => {
 	const onFinish = async (values) => {
 		setLoading(true)
 		await axios
-			.post('http://localhost:5002/users/register', values)
+			.post('/users/register', values)
 			.then((response) => {
 				//Save User and token to context and local storage
 				const { data } = response

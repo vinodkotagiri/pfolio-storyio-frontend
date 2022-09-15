@@ -24,7 +24,7 @@ const SignIn = () => {
 		setLoading(true)
 
 		await axios
-			.post('http://localhost:5002/users/login', values)
+			.post('/users/login', values)
 			.then((response) => {
 				setLoading(false)
 				//Save User and token to context and local storage
@@ -109,7 +109,6 @@ const SignIn = () => {
 							type='outlined'
 							onClick={onReset}
 							className='login-form-button'
-							loading={loading}
 							style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
 							Reset
 						</Button>
