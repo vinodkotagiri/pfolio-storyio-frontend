@@ -15,11 +15,14 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@react-hook/window-size": "^3.1.1",
+    "@uiw/react-md-editor": "^3.6.0",
     "antd": "^4.23.0",
     "axios": "^0.27.2",
     "next": "^12.2.5",
+    "next-remove-imports": "^1.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hot-toast": "^2.3.0"
+    "react-hot-toast": "^2.3.0",
+    "react-quill": "^2.0.0"
   }
 }
