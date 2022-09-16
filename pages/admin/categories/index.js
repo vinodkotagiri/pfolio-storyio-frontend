@@ -63,7 +63,6 @@ const Categories = () => {
 								},
 							]}>
 							<Input
-								ref={ref}
 								prefix={<EditOutlined />}
 								className='site-form-item-icon'
 								placeholder='Enter Category Name'

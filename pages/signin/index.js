@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, Checkbox, Col, Form, Input, Row } from 'antd'
 import Link from 'next/link'
@@ -10,7 +10,7 @@ const SignIn = () => {
 	//State for button loading animation
 	const [loading, setLoading] = useState(false)
 	//Auth context
-	const [aut, setAuth] = useContext(AuthContext)
+	const [auth, setAuth] = useContext(AuthContext)
 
 	//Hook
 	const route = useRouter()
@@ -20,6 +20,12 @@ const SignIn = () => {
 		form.resetFields()
 		setLoading(false)
 	}
+
+	//If aleready signed in
+	useEffect(() => {
+		if (auth?.user) route.push('/')
+	}, [auth?.token])
+
 	//Handle login
 	const onFinish = async (values) => {
 		setLoading(true)
