@@ -1,15 +1,17 @@
-import { Col, Form, Input, Row, Button, Divider, Tooltip } from 'antd'
+import { Col, Form, Input, Row, Button, Divider, Tooltip, Modal } from 'antd'
 import { EditOutlined, DeleteFilled, EditFilled } from '@ant-design/icons'
 import React, { useEffect, useState, useRef } from 'react'
 import AdminLayout from '../../../components/AdminLayout'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import CategoryEditModal from '../../../components/CategoryEditModal'
 const Categories = () => {
 	// state for categories
 	const [categories, setCategories] = useState([])
 	//Loader animation state
 	const [loading, setLoading] = useState(false)
 	//Function to handle Add button click
+	const [form] = Form.useForm()
 	const addCategory = async (values) => {
 		setLoading(true)
 		await axios
@@ -18,6 +20,7 @@ const Categories = () => {
 				console.log(response)
 				toast.success('Category Added Successfully')
 				setLoading(false)
+				form.resetFields()
 			})
 			.catch((error) => {
 				console.log(error)
@@ -40,7 +43,50 @@ const Categories = () => {
 	}, [setCategories, getCategories])
 
 	//Rename Category
-	//reference input box to focus when button clicked
+	// Open modal window
+	const [open, setOpen] = useState(false)
+	const [updatingCategory, setUpdatingCategory] = useState({})
+	const openModal = (data) => {
+		const { category } = data
+		setOpen(true)
+		console.log(category)
+		setUpdatingCategory(category)
+	}
+
+	const renameCategory = async (category) => {
+		console.log(updatingCategory)
+		console.log()
+		if (category.update.toLowerCase() === updatingCategory.name.toLowerCase()) {
+			toast.success('No changes')
+			setOpen(false)
+			return
+		}
+		try {
+			const newCategory = {
+				_id: updatingCategory._id,
+				name: category.update.toLowerCase(),
+			}
+			await axios.post(`categories/edit`, newCategory).then((response) => {
+				setOpen(false)
+				toast.success('Successfully updated category')
+			})
+		} catch (error) {
+			console.log(error)
+			toast.error('Error updatingCategory')
+		}
+	}
+	//Rename Category
+	const deleteCategory = async (data) => {
+		const { _id } = data.category
+		console.log(_id)
+		try {
+			await axios.delete(`/categories/${_id}`)
+			toast.success('Category deleted successfully!')
+			getCategories()
+		} catch (error) {
+			toast.error('Error deleting Category')
+		}
+	}
 
 	return (
 		<AdminLayout>
@@ -53,7 +99,7 @@ const Categories = () => {
 					<div style={{ textAlign: 'center' }}>
 						<p>Add new category</p>
 					</div>
-					<Form onFinish={addCategory}>
+					<Form onFinish={addCategory} form={form}>
 						<Form.Item
 							name='name'
 							rules={[
@@ -102,12 +148,14 @@ const Categories = () => {
 								</span>
 								<span
 									style={{ margin: '0 0.5rem', color: '#ABD9FF' }}
-									onClick={() => renameCategory({ category })}>
+									onClick={() => openModal({ category })}>
 									<Tooltip placement='top' title='Edit'>
 										{<EditFilled />}
 									</Tooltip>
 								</span>
-								<span style={{ color: '#FA7070' }}>
+								<span
+									style={{ color: '#FA7070' }}
+									onClick={() => deleteCategory({ category })}>
 									<Tooltip placement='top' title='Delete'>
 										{<DeleteFilled />}
 									</Tooltip>
@@ -116,6 +164,12 @@ const Categories = () => {
 						))}
 					</div>
 				</Col>
+				<CategoryEditModal
+					open={open}
+					updatingCategory={updatingCategory}
+					renameCategory={renameCategory}
+					setOpen={setOpen}
+				/>
 			</Row>
 		</AdminLayout>
 	)
